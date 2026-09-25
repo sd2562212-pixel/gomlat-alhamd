@@ -1120,6 +1120,35 @@
             alert("كلمة المرور غير صحيحة! تم إلغاء العملية.");
         }
     }
+
+    let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // منع ظهور نافذة المتصفح التلقائية مؤقتاً
+  e.preventDefault();
+  // حفظ الحدث للاستخدام لاحقاً
+  deferredPrompt = e;
+  
+  console.log('تم التقاط حدث التثبيت بنجاح!');
+  
+  // إظهار زر التثبيت المخصص لو موجود عندك في الواجهة
+  const installButton = document.getElementById('install-btn');
+  if (installButton) {
+    installButton.style.display = 'block';
+    installButton.addEventListener('click', () => {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('المستخدم وافق على تثبيت التطبيق');
+        } else {
+          console.log('المستخدم رفض تثبيت التطبيق');
+        }
+        deferredPrompt = null;
+      });
+    });
+  }
+});
+
 </script>
 
 </body>
